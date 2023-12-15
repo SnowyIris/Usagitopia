@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+license = " "
+[[mods]]
+modId = "usagitopia"
+version = "${file.jarVersion}"
+displayName = "Usagitopia"
+logoFile = "usagitopia.png"
+authors = "兔子控"
+description = '''
+兔托邦（Usagitopia）是《Rabi-Ribi》与《TEVI》的同人模组，致力于将少女们的身影呈现于《Minecraft》游戏中。
+'''
+[[dependencies.usagitopia]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.usagitopia]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"

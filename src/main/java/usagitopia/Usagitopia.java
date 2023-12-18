@@ -28,6 +28,7 @@ public class Usagitopia
         BlockEntityTypeRegistry.BLOCK_ENTITY_TYPES.register(modEventBus);
         SoundEventRegistry.SOUNDS.register(modEventBus);
         MenuTypeRegistry.MENUS.register(modEventBus);
+        MobEffectRegistry.MOB_EFFECTS.register(modEventBus);
         
         MinecraftForge.EVENT_BUS.register(this);
     }

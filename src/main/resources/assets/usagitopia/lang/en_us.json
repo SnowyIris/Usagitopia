@@ -1,6 +1,10 @@
 {
   "itemGroup.usagitopia.main": "§bUsagitopia",
   "item.usagitopia.bb_rabbit": "BB Rabbit",
+  "entity.usagitopia.u_girl_blue": "Blue UPRPRC Girl",
+  "entity.usagitopia.u_girl_green": "Green UPRPRC Girl",
+  "entity.usagitopia.u_girl_red": "Red UPRPRC Girl",
+  "entity.usagitopia.u_gunner_red": "Red UPRPRC Gunner",
   "entity.usagitopia.bb_rabbit": "BB Rabbit",
   "effect.usagitopia.vulnerance": "Vulnerance"
 }

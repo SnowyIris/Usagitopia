@@ -35,7 +35,7 @@ public class Usagitopia
     
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-    
+        MobSpawnRegistry.registerMobSpawn(event);
     }
     
     @SubscribeEvent

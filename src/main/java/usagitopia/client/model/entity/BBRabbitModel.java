@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.Usagitopia;
-import usagitopia.world.entity.BBRabbitMob;
+import usagitopia.world.entity.BBRabbit;
 
 public class BBRabbitModel<T extends Entity> extends EntityModel<T>
 {
     public static final float              SHADOW_SIZE    = 0.40F;
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Usagitopia.MOD_ID, BBRabbitMob.REGISTRY_NAME), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Usagitopia.MOD_ID, BBRabbit.REGISTRY_NAME), "main");
     
     protected final ModelPart BODY;
     protected final ModelPart EAR_LEFT_UPPER;

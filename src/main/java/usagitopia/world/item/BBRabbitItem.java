@@ -12,7 +12,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.world.CreativeModeTabs;
-import usagitopia.world.entity.BBRabbitMob;
+import usagitopia.world.entity.BBRabbit;
 import usagitopia.world.registry.EntityTypeRegistry;
 
 public class BBRabbitItem extends Item
@@ -32,7 +32,7 @@ public class BBRabbitItem extends Item
         player.getCooldowns().addCooldown(this, 20);
         if(!level.isClientSide)
         {
-            BBRabbitMob bbRabbit = EntityTypeRegistry.BB_RABBIT.get().create(level);
+            BBRabbit bbRabbit = EntityTypeRegistry.BB_RABBIT.get().create(level);
             assert bbRabbit != null;
             bbRabbit.throwOutFrom(player, 1.0F, 0.3F);
             level.addFreshEntity(bbRabbit);

@@ -6,9 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.Usagitopia;
 import usagitopia.client.model.entity.BBRabbitModel;
-import usagitopia.world.entity.BBRabbitMob;
+import usagitopia.world.entity.BBRabbit;
 
-public class BBRabbitRender extends MobRenderer<BBRabbitMob, BBRabbitModel<BBRabbitMob>>
+public class BBRabbitRender extends MobRenderer<BBRabbit, BBRabbitModel<BBRabbit>>
 {
     
     public BBRabbitRender(EntityRendererProvider.Context ctx)
@@ -17,9 +17,9 @@ public class BBRabbitRender extends MobRenderer<BBRabbitMob, BBRabbitModel<BBRab
     }
     
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull BBRabbitMob entity)
+    public @NotNull ResourceLocation getTextureLocation(@NotNull BBRabbit entity)
     {
-        return new ResourceLocation(Usagitopia.MOD_ID, "textures/entity/" + BBRabbitMob.REGISTRY_NAME + ".png");
+        return new ResourceLocation(Usagitopia.MOD_ID, "textures/entity/" + BBRabbit.REGISTRY_NAME + ".png");
     }
     
 }

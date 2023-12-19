@@ -1,6 +1,10 @@
 {
   "itemGroup.usagitopia.main": "§b兔托邦",
   "item.usagitopia.bb_rabbit": "BB麻糬兔",
+  "entity.usagitopia.u_girl_blue": "蓝色UPRPRC少女",
+  "entity.usagitopia.u_girl_green": "绿色UPRPRC少女",
+  "entity.usagitopia.u_girl_red": "红色UPRPRC少女",
+  "entity.usagitopia.u_gunner_red": "红色UPRPRC枪手",
   "entity.usagitopia.bb_rabbit": "BB麻糬兔",
   "effect.usagitopia.vulnerance": "易伤"
 }

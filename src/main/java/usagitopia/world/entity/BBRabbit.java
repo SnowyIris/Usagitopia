@@ -19,7 +19,7 @@ import net.minecraftforge.common.ForgeHooks;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.world.registry.MobEffectRegistry;
 
-public class BBRabbitMob extends RabbitLikeMob
+public class BBRabbit extends RabbitLikeMob
 {
     public static final String REGISTRY_NAME         = "bb_rabbit";
     public static final float  WIDTH                 = 0.7F;
@@ -30,7 +30,7 @@ public class BBRabbitMob extends RabbitLikeMob
     public static final float  TARGET_LOCK_RANGE     = 16.0F;
     public static final int    DEBUFF_ATTACH_DURANCE = 1000;
     
-    public BBRabbitMob(EntityType<? extends PathfinderMob> entityType, Level level)
+    public BBRabbit(EntityType<? extends PathfinderMob> entityType, Level level)
     {
         super(entityType, level);
     }
@@ -126,8 +126,19 @@ public class BBRabbitMob extends RabbitLikeMob
     }
     
     @Override
+    protected int calculateFallDamage(float pFallDistance, float pDamageMultiplier)
+    {
+        return 0;
+    }
+    
+    @Override
     protected void actuallyHurt(@NotNull DamageSource damageSource, float damageAmount)
     {
+        if(damageSource.equals(DamageSource.OUT_OF_WORLD))
+        {
+            super.actuallyHurt(damageSource, damageAmount);
+            return;
+        }
         if(!this.isInvulnerableTo(damageSource))
         {
             ForgeHooks.onLivingHurt(this, damageSource, damageAmount);

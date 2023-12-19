@@ -6,27 +6,27 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.JumpControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 
-public abstract class RabbitLikeMob extends PathfinderMob
+public abstract class RabbitLikeMonster extends Monster
 {
-    private static final EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(RabbitLikeMob.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(RabbitLikeMonster.class, EntityDataSerializers.BOOLEAN);
     
     private int     jumpTicks;
     private int     jumpDuration;
     private boolean wasOnGround;
     private int     jumpDelayTicks;
     
-    protected RabbitLikeMob(EntityType<? extends PathfinderMob> entityType, Level level)
+    protected RabbitLikeMonster(EntityType<? extends Monster> entityType, Level level)
     {
         super(entityType, level);
-        this.jumpControl = new RabbitLikeMob.RabbitLikeJumpControl(this);
-        this.moveControl = new RabbitLikeMob.RabbitLikeMoveControl(this);
+        this.jumpControl = new RabbitLikeMonster.RabbitLikeJumpControl(this);
+        this.moveControl = new RabbitLikeMonster.RabbitLikeMoveControl(this);
         this.setSpeedModifier(0.0D);
     }
     
@@ -60,28 +60,6 @@ public abstract class RabbitLikeMob extends PathfinderMob
     }
     
     @Override
-    public void aiStep()
-    {
-        super.aiStep();
-        if(this.jumpTicks != this.jumpDuration)
-        {
-            ++this.jumpTicks;
-        }
-        else if(this.jumpDuration != 0)
-        {
-            this.jumpTicks    = 0;
-            this.jumpDuration = 0;
-            this.setJumping(false);
-        }
-        
-    }
-    
-    protected SoundEvent getJumpSound()
-    {
-        return null;
-    }
-    
-    @Override
     public void customServerAiStep()
     {
         if(this.jumpDelayTicks > 0)
@@ -97,7 +75,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
                 this.checkLandingDelay();
             }
             
-            RabbitLikeMob.RabbitLikeJumpControl jumpControl = (RabbitLikeMob.RabbitLikeJumpControl)this.jumpControl;
+            RabbitLikeMonster.RabbitLikeJumpControl jumpControl = (RabbitLikeMonster.RabbitLikeJumpControl)this.jumpControl;
             if(!jumpControl.wantJump())
             {
                 if(this.moveControl.hasWanted() && this.jumpDelayTicks == 0)
@@ -141,7 +119,12 @@ public abstract class RabbitLikeMob extends PathfinderMob
     
     private void enableJumpControl()
     {
-        ((RabbitLikeMob.RabbitLikeJumpControl)this.jumpControl).setCanJump(true);
+        ((RabbitLikeMonster.RabbitLikeJumpControl)this.jumpControl).setCanJump(true);
+    }
+    
+    protected SoundEvent getJumpSound()
+    {
+        return null;
     }
     
     private void setLandingDelay()
@@ -159,12 +142,34 @@ public abstract class RabbitLikeMob extends PathfinderMob
     
     private void disableJumpControl()
     {
-        ((RabbitLikeMob.RabbitLikeJumpControl)this.jumpControl).setCanJump(false);
+        ((RabbitLikeMonster.RabbitLikeJumpControl)this.jumpControl).setCanJump(false);
+    }
+    
+    @Override
+    public void aiStep()
+    {
+        super.aiStep();
+        if(this.jumpTicks != this.jumpDuration)
+        {
+            ++this.jumpTicks;
+        }
+        else if(this.jumpDuration != 0)
+        {
+            this.jumpTicks    = 0;
+            this.jumpDuration = 0;
+            this.setJumping(false);
+        }
+        
     }
     
     public boolean syncIsJumping()
     {
         return this.entityData.get(DATA_JUMPING);
+    }
+    
+    public float getJumpCompletion(float partialTick)
+    {
+        return this.jumpDuration == 0 ? 0.0F : ((float)this.jumpTicks + partialTick) / (float)this.jumpDuration;
     }
     
     @Override
@@ -178,15 +183,15 @@ public abstract class RabbitLikeMob extends PathfinderMob
                 Vec3 vec3 = path.getNextEntityPos(this);
                 if(vec3.y > this.getY() + 0.5D)
                 {
-                    return 0.5F;
+                    return 0.6F;
                 }
             }
             
-            return this.moveControl.getSpeedModifier() <= 0.6D ? 0.2F : 0.3F;
+            return this.moveControl.getSpeedModifier() <= 0.6D ? 0.3F : 0.4F;
         }
         else
         {
-            return 0.5F;
+            return 0.6F;
         }
     }
     
@@ -203,13 +208,15 @@ public abstract class RabbitLikeMob extends PathfinderMob
                 this.moveRelative(0.1F, new Vec3(0.0D, 0.0D, 1.0D));
             }
         }
-        
         if(!this.level.isClientSide)
         {
             this.level.broadcastEntityEvent(this, (byte)1);
         }
-        
+        Vec3 d = this.getDeltaMovement();
+        this.setDeltaMovement(d.x() * this.getJumpHorizontalModifier(), d.y(), d.z() * this.getJumpHorizontalModifier());
     }
+    
+    protected abstract double getJumpHorizontalModifier();
     
     @Override
     public void setJumping(boolean jumping)
@@ -222,17 +229,12 @@ public abstract class RabbitLikeMob extends PathfinderMob
         }
     }
     
-    public float getJumpCompletion(float partialTick)
-    {
-        return this.jumpDuration == 0 ? 0.0F : ((float)this.jumpTicks + partialTick) / (float)this.jumpDuration;
-    }
-    
     public static class RabbitLikeMoveControl extends MoveControl
     {
-        private final RabbitLikeMob rabbitLikeMob;
-        private       double        nextJumpSpeed;
+        private final RabbitLikeMonster rabbitLikeMob;
+        private       double            nextJumpSpeed;
         
-        public RabbitLikeMoveControl(RabbitLikeMob rabbitLikeMob)
+        public RabbitLikeMoveControl(RabbitLikeMonster rabbitLikeMob)
         {
             super(rabbitLikeMob);
             this.rabbitLikeMob = rabbitLikeMob;
@@ -251,7 +253,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
         @Override
         public void tick()
         {
-            if(this.rabbitLikeMob.isOnGround() && !this.rabbitLikeMob.syncIsJumping() && !((RabbitLikeMob.RabbitLikeJumpControl)this.rabbitLikeMob.getJumpControl()).wantJump())
+            if(this.rabbitLikeMob.isOnGround() && !this.rabbitLikeMob.syncIsJumping() && !((RabbitLikeMonster.RabbitLikeJumpControl)this.rabbitLikeMob.getJumpControl()).wantJump())
             {
                 this.rabbitLikeMob.setSpeedModifier(0.0D);
             }
@@ -266,10 +268,10 @@ public abstract class RabbitLikeMob extends PathfinderMob
     
     public static class RabbitLikeJumpControl extends JumpControl
     {
-        private final RabbitLikeMob rabbitLikeMob;
-        private       boolean       canJump;
+        private final RabbitLikeMonster rabbitLikeMob;
+        private       boolean           canJump;
         
-        public RabbitLikeJumpControl(RabbitLikeMob rabbitLikeMob)
+        public RabbitLikeJumpControl(RabbitLikeMonster rabbitLikeMob)
         {
             super(rabbitLikeMob);
             this.rabbitLikeMob = rabbitLikeMob;

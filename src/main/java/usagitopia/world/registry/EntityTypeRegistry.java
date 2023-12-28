@@ -13,7 +13,7 @@ import usagitopia.world.entity.BBRabbit;
 import usagitopia.world.entity.UPRPRCGirl;
 
 @Mod.EventBusSubscriber(modid = Usagitopia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EntityTypeRegistry
+public final class EntityTypeRegistry
 {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Usagitopia.MOD_ID);
     

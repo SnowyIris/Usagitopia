@@ -8,7 +8,7 @@ import usagitopia.client.model.entity.BBRabbitModel;
 import usagitopia.client.model.entity.UPRPRCGirlModel;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class LayerRegistry
+public final class LayerRegistry
 {
     private LayerRegistry()
     {

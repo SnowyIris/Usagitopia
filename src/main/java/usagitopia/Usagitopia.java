@@ -12,7 +12,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import usagitopia.world.registry.*;
 
 @Mod(Usagitopia.MOD_ID)
-public class Usagitopia
+public final class Usagitopia
 {
     public static final String MOD_ID = "usagitopia";
     

@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.world.registry.ItemRegistry;
 
-public class CreativeModeTabs
+public final class CreativeModeTabs
 {
     public static final CreativeModeTab USAGITOPIA_TAB = new CreativeModeTab("usagitopia.main")
     {

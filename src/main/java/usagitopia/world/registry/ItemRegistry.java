@@ -7,7 +7,7 @@ import net.minecraftforge.registries.RegistryObject;
 import usagitopia.Usagitopia;
 import usagitopia.world.item.BBRabbitItem;
 
-public class ItemRegistry
+public final class ItemRegistry
 {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Usagitopia.MOD_ID);
     

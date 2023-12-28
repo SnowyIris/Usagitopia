@@ -1,14 +1,12 @@
 package usagitopia.world.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -31,16 +29,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.scores.PlayerTeam;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.Usagitopia;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.UUID;
 
 public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedAttackMob
@@ -52,46 +46,9 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
     public static final double MOVEMENT_SPEED      = 0.5D;
     public static final double MELEE_ATTACK_DAMAGE = 4.0D;
     
-    public static final HashSet<ResourceKey<Biome>> AVAILABLE_SPAWN_BIOME = new HashSet<>();
-    
     private static final UniformInt                  PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private static final EntityDataAccessor<Boolean> DATA_ANGRY            = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String>  DATA_GIRL_TYPE        = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.STRING);
-    
-    static
-    {
-        AVAILABLE_SPAWN_BIOME.add(Biomes.JUNGLE);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.GROVE);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.BAMBOO_JUNGLE);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.SPARSE_JUNGLE);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.BEACH);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.BIRCH_FOREST);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.COLD_OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.DARK_FOREST);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.DEEP_COLD_OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.DEEP_LUKEWARM_OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.DEEP_OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.FLOWER_FOREST);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.FOREST);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.LUKEWARM_OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.OLD_GROWTH_BIRCH_FOREST);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.OLD_GROWTH_PINE_TAIGA);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.OLD_GROWTH_SPRUCE_TAIGA);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.PLAINS);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.RIVER);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.SAVANNA);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.SAVANNA_PLATEAU);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.SUNFLOWER_PLAINS);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.THE_VOID);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.WARM_OCEAN);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.WINDSWEPT_FOREST);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.WINDSWEPT_GRAVELLY_HILLS);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.WINDSWEPT_HILLS);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.WINDSWEPT_SAVANNA);
-        AVAILABLE_SPAWN_BIOME.add(Biomes.WOODED_BADLANDS);
-        
-    }
     
     private final RangedAttackGoal gunGoal   = new RangedAttackGoal(this, 1.25D, 20, 10.0F);
     private final MeleeAttackGoal  meleeGoal = new MeleeAttackGoal(this, 1.2D, false)
@@ -118,15 +75,6 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
     {
         super(entityType, level);
         this.xpReward = Enemy.XP_REWARD_MEDIUM;
-    }
-    
-    public static boolean canSpawnIn(@Nullable DimensionType dimension, @Nullable Holder<Biome> biome)
-    {
-        if(dimension != null && !dimension.natural())
-        {
-            return false;
-        }
-        return biome == null || AVAILABLE_SPAWN_BIOME.stream().anyMatch(biome::is);
     }
     
     public static AttributeSupplier.Builder createAttributes()

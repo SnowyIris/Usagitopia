@@ -17,6 +17,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import org.jetbrains.annotations.NotNull;
+import usagitopia.world.entity.behavior.RabbitBehavior;
 import usagitopia.world.registry.MobEffectRegistry;
 
 public class BBRabbit extends RabbitLikeMob

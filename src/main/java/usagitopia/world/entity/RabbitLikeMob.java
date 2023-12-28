@@ -12,8 +12,9 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
+import usagitopia.world.entity.behavior.RabbitBehavior;
 
-public abstract class RabbitLikeMob extends PathfinderMob
+public abstract class RabbitLikeMob extends PathfinderMob implements RabbitBehavior
 {
     private static final EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(RabbitLikeMob.class, EntityDataSerializers.BOOLEAN);
     
@@ -25,15 +26,6 @@ public abstract class RabbitLikeMob extends PathfinderMob
     protected RabbitLikeMob(EntityType<? extends PathfinderMob> entityType, Level level)
     {
         super(entityType, level);
-        this.jumpControl = new RabbitLikeMob.RabbitLikeJumpControl(this);
-        this.moveControl = new RabbitLikeMob.RabbitLikeMoveControl(this);
-        this.setSpeedModifier(0.0D);
-    }
-    
-    public void setSpeedModifier(double speedModifier)
-    {
-        this.getNavigation().setSpeedModifier(speedModifier);
-        this.moveControl.setWantedPosition(this.moveControl.getWantedX(), this.moveControl.getWantedY(), this.moveControl.getWantedZ(), speedModifier);
     }
     
     @Override
@@ -130,13 +122,6 @@ public abstract class RabbitLikeMob extends PathfinderMob
     private void facePoint(double pX, double pZ)
     {
         this.setYRot((float)(Mth.atan2(pZ - this.getZ(), pX - this.getX()) * (double)(180F / (float)Math.PI)) - 90.0F);
-    }
-    
-    public void startJumping()
-    {
-        this.setJumping(true);
-        this.jumpDuration = 10;
-        this.jumpTicks    = 0;
     }
     
     private void enableJumpControl()

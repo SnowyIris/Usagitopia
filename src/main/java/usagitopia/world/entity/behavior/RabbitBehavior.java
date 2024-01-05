@@ -20,6 +20,10 @@ public interface RabbitBehavior
     
     void aiStep(); // let aspect logic inject in.
     
+    float getJumpPower(); // let aspect logic inject in. return 'Float.MIN_VALUE' to let aspect logic decide value returning, otherwise returning original value.
+    
+    void jumpFromGround(); // let aspect logic inject in.
+    
     default double getJumpHorizontalModifier()
     {
         return 1.0D;
@@ -51,6 +55,8 @@ public interface RabbitBehavior
             return false;
         }
     }
+    
+    void setJumping(boolean jumping); // let aspect logic inject in.
     
     default void startJumping() // let aspect logic inject in.
     {
@@ -127,9 +133,9 @@ public interface RabbitBehavior
             return this.canJump;
         }
         
-        public void setCanJump(boolean pCanJump)
+        public void setCanJump(boolean canJump)
         {
-            this.canJump = pCanJump;
+            this.canJump = canJump;
         }
         
         @Override

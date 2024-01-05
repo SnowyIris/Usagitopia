@@ -8,8 +8,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.JumpControl;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
@@ -36,6 +34,12 @@ public class BBRabbit extends PathfinderMob implements RabbitBehavior
     public BBRabbit(EntityType<? extends PathfinderMob> entityType, Level level)
     {
         super(entityType, level);
+    }
+    
+    @Override
+    public void setJumping(boolean jumping)
+    {
+        super.setJumping(jumping);
     }
     
     public static AttributeSupplier.Builder createAttributes()
@@ -100,12 +104,6 @@ public class BBRabbit extends PathfinderMob implements RabbitBehavior
     }
     
     @Override
-    public void customServerAiStep()
-    {
-        super.customServerAiStep();
-    }
-    
-    @Override
     public void aiStep()
     {
         super.aiStep();
@@ -115,6 +113,12 @@ public class BBRabbit extends PathfinderMob implements RabbitBehavior
     public boolean removeWhenFarAway(double pDistanceToClosestPlayer)
     {
         return false;
+    }
+    
+    @Override
+    public void customServerAiStep()
+    {
+        super.customServerAiStep();
     }
     
     @Override
@@ -173,6 +177,18 @@ public class BBRabbit extends PathfinderMob implements RabbitBehavior
                 this.gameEvent(GameEvent.ENTITY_DAMAGE);
             }
         }
+    }
+    
+    @Override
+    public float getJumpPower()
+    {
+        return Float.MIN_VALUE;
+    }
+    
+    @Override
+    public void jumpFromGround()
+    {
+        super.jumpFromGround();
     }
     
     @Override

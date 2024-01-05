@@ -24,6 +24,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
@@ -33,17 +34,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.scores.PlayerTeam;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.Usagitopia;
+import usagitopia.world.entity.behavior.RabbitBehavior;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedAttackMob
+public class UPRPRCGirl extends Monster implements RabbitBehavior, NeutralMob, RangedAttackMob
 {
     public static final String REGISTRY_NAME       = "uprprc_girl";
     public static final float  WIDTH               = 10.0F / 16.0F;
     public static final float  HEIGHT              = 24.0F / 16.0F;
     public static final double MAX_HEALTH          = 20.0D;
-    public static final double MOVEMENT_SPEED      = 0.5D;
+    public static final double MOVEMENT_SPEED      = 0.3D;
     public static final double MELEE_ATTACK_DAMAGE = 4.0D;
     
     private static final UniformInt                  PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
@@ -111,9 +113,25 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
     }
     
     @Override
+    public void setJumping(boolean jumping)
+    {
+        super.setJumping(jumping);
+    }
+    
+    @Override
     public @NotNull SoundSource getSoundSource()
     {
         return SoundSource.HOSTILE;
+    }
+    
+    @Override
+    public void aiStep()
+    {
+        super.aiStep();
+        if(!this.level.isClientSide)
+        {
+            this.updatePersistentAnger((ServerLevel)this.level, true);
+        }
     }
     
     @Override
@@ -129,31 +147,25 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
     }
     
     @Override
-    protected void defineSynchedData()
+    public float getJumpPower()
     {
-        super.defineSynchedData();
-        this.entityData.define(DATA_ANGRY, false);
-        this.entityData.define(DATA_GIRL_TYPE, GirlType.GIRL_BLUE.name());
+        return Float.MIN_VALUE;
     }
     
     @Override
-    public void customServerAiStep()
+    public void jumpFromGround()
     {
-        super.customServerAiStep();
+        super.jumpFromGround();
     }
     
     @Override
-    public void aiStep()
+    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size)
     {
-        super.aiStep();
-        if(!this.level.isClientSide)
-        {
-            this.updatePersistentAnger((ServerLevel)this.level, true);
-        }
+        return 1.40F;
     }
     
     @Override
-    protected double getJumpHorizontalModifier()
+    public double getJumpHorizontalModifier()
     {
         return 5.0d;
     }
@@ -185,6 +197,14 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
     }
     
     @Override
+    public void defineSynchedData()
+    {
+        super.defineSynchedData();
+        this.entityData.define(DATA_ANGRY, false);
+        this.entityData.define(DATA_GIRL_TYPE, GirlType.GIRL_BLUE.name());
+    }
+    
+    @Override
     public int getExperienceReward()
     {
         return this.xpReward;
@@ -209,6 +229,12 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
         super.readAdditionalSaveData(tag);
         this.setGirlType(GirlType.valueOfWithDefault(tag.getString("GirlType"), GirlType.GIRL_BLUE));
         this.reassessWeaponGoal();
+    }
+    
+    @Override
+    public void customServerAiStep()
+    {
+        super.customServerAiStep();
     }
     
     @Override
@@ -280,12 +306,6 @@ public class UPRPRCGirl extends RabbitLikeMonster implements NeutralMob, RangedA
     protected SoundEvent getGunFireSound()
     {
         return SoundEvents.SKELETON_SHOOT;
-    }
-    
-    @Override
-    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size)
-    {
-        return 1.40F;
     }
     
     @Override

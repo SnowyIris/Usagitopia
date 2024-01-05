@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 
+@Deprecated
 public abstract class RabbitLikeMob extends PathfinderMob
 {
     private static final EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(RabbitLikeMob.class, EntityDataSerializers.BOOLEAN);
@@ -139,11 +140,6 @@ public abstract class RabbitLikeMob extends PathfinderMob
         ((RabbitLikeMob.RabbitLikeJumpControl)this.jumpControl).setCanJump(true);
     }
     
-    protected SoundEvent getJumpSound()
-    {
-        return null;
-    }
-    
     private void setLandingDelay()
     {
         if(this.moveControl.getSpeedModifier() < 2.2D)
@@ -160,6 +156,11 @@ public abstract class RabbitLikeMob extends PathfinderMob
     private void disableJumpControl()
     {
         ((RabbitLikeMob.RabbitLikeJumpControl)this.jumpControl).setCanJump(false);
+    }
+    
+    protected SoundEvent getJumpSound()
+    {
+        return null;
     }
     
     public boolean syncIsJumping()
@@ -229,6 +230,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
         }
     }
     
+    @Deprecated
     public static class RabbitLikeMoveControl extends MoveControl
     {
         private final RabbitLikeMob rabbitLikeMob;
@@ -266,6 +268,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
         
     }
     
+    @Deprecated
     public static class RabbitLikeJumpControl extends JumpControl
     {
         private final RabbitLikeMob rabbitLikeMob;

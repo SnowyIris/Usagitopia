@@ -1,54 +1,78 @@
 package usagitopia.world.entity.behavior;
 
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.JumpControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import usagitopia.world.entity.RabbitLikeMob;
 
 public interface RabbitBehavior
 {
+    EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.BOOLEAN);
     
-    int     jumpTicks    = 0;
-    int     jumpDuration = 0;
-    boolean wasOnGround    = false;
-    int     jumpDelayTicks = 0;
+    void defineSynchedData(); // let aspect logic inject in.
     
-    private Mob asMob()
+    void handleEntityEvent(byte id); // let aspect logic inject in.
+    
+    void customServerAiStep(); // let aspect logic inject in.
+    
+    void aiStep(); // let aspect logic inject in.
+    
+    default double getJumpHorizontalModifier()
     {
-        return (Mob)this;
+        return 1.0D;
     }
     
-    
-    public default void startJumping()
+    default void setSpeedModifier(double speedModifier)
     {
-        asMob().setJumping(true);
-        this.jumpDuration = 10;
-        asMob().jumpTicks    = 0;
+        ((Mob)this).getNavigation().setSpeedModifier(speedModifier);
+        ((Mob)this).getMoveControl().setWantedPosition(
+            ((Mob)this).getMoveControl().getWantedX(),
+            ((Mob)this).getMoveControl().getWantedY(),
+            ((Mob)this).getMoveControl().getWantedZ(),
+            speedModifier
+        );
     }
     
-    public default void setJumpControl(JumpControl jumpControl)
+    default boolean isJumping()
     {
-    
-    }
-    
-    public default void setMoveControl(MoveControl moveControl)
-    {
-    
-    }
-    
-    public default void setSpeedModifier(double speedModifier)
-    {
-        asMob().getNavigation().setSpeedModifier(speedModifier);
-        asMob().getMoveControl().setWantedPosition(asMob().getMoveControl().getWantedX(), asMob().getMoveControl().getWantedY(), asMob().getMoveControl().getWantedZ(), speedModifier);
-    }
-    
-    public static class RabbicMoveControl extends MoveControl
-    {
-        private       double nextJumpSpeed;
-        
-        public <R extends Mob & RabbitBehavior> RabbicMoveControl(R mob)
+        try
         {
-            super(mob);
+            return ((Mob)this).getEntityData().get(RabbitBehavior.DATA_JUMPING);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Exception@'usagitopia.world.entity.behavior.RabbitBehavior.isJumping()', returning 'false'.");
+            System.out.println("  - Cannot get entity data 'RabbitBehavior.DATA_JUMPING'.");
+            System.out.println("      - Exception: " + e.getMessage());
+            System.out.println("      - Caused by: " + e.getCause());
+            return false;
+        }
+    }
+    
+    default void startJumping() // let aspect logic inject in.
+    {
+    }
+    
+    default SoundEvent getJumpSound()
+    {
+        return null;
+    }
+    
+    default float getJumpCompletion(float partialTick)
+    {
+        return Float.MIN_VALUE; // return 'Float.MIN_VALUE' to let aspect logic decide value returning, otherwise returning original value.
+    }
+    
+    class RabbicMoveControl extends MoveControl
+    {
+        private double nextJumpSpeed;
+        
+        public RabbicMoveControl(Mob rabbic)
+        {
+            super(rabbic);
         }
         
         @Override
@@ -64,28 +88,33 @@ public interface RabbitBehavior
         @Override
         public void tick()
         {
-            if(this.mob.isOnGround() && !((RabbitBehavior)this.mob).syncIsJumping() && !((RabbitLikeMob.RabbitLikeJumpControl)this.mob.getJumpControl()).wantJump())
+            if(this.mob.isOnGround() && outer().isJumping() && !((RabbitBehavior.RabbicJumpControl)this.mob.getJumpControl()).wantJump())
             {
-                ((RabbitBehavior)this.mob).setSpeedModifier(0.0D);
+                this.outer().setSpeedModifier(0.0D);
             }
             else if(this.hasWanted())
             {
-                ((RabbitBehavior)this.mob).setSpeedModifier(this.nextJumpSpeed);
+                this.outer().setSpeedModifier(this.nextJumpSpeed);
             }
             super.tick();
         }
         
+        protected RabbitBehavior outer()
+        {
+            return (RabbitBehavior)this.mob;
+        }
+        
     }
     
-    public static class RabbicJumpControl extends JumpControl
+    class RabbicJumpControl extends JumpControl
     {
-        private final Mob     mob;
+        private final Mob     rabbic;
         private       boolean canJump;
         
-        public <R extends Mob & RabbitBehavior>  RabbicJumpControl(R mob)
+        public RabbicJumpControl(Mob rabbic)
         {
-            super(mob);
-            this.mob = mob;
+            super(rabbic);
+            this.rabbic = rabbic;
         }
         
         public boolean wantJump()
@@ -108,11 +137,17 @@ public interface RabbitBehavior
         {
             if(this.jump)
             {
-                ((RabbitBehavior)this.mob).startJumping();
+                this.outer().startJumping();
                 this.jump = false;
             }
             
         }
         
+        protected RabbitBehavior outer()
+        {
+            return (RabbitBehavior)this.rabbic;
+        }
+        
     }
+    
 }

@@ -8,6 +8,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.JumpControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
@@ -20,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import usagitopia.world.entity.behavior.RabbitBehavior;
 import usagitopia.world.registry.MobEffectRegistry;
 
-public class BBRabbit extends RabbitLikeMob
+public class BBRabbit extends PathfinderMob implements RabbitBehavior
 {
     public static final String REGISTRY_NAME         = "bb_rabbit";
     public static final float  WIDTH                 = 0.7F;
@@ -92,6 +94,24 @@ public class BBRabbit extends RabbitLikeMob
     }
     
     @Override
+    public void defineSynchedData()
+    {
+        super.defineSynchedData();
+    }
+    
+    @Override
+    public void customServerAiStep()
+    {
+        super.customServerAiStep();
+    }
+    
+    @Override
+    public void aiStep()
+    {
+        super.aiStep();
+    }
+    
+    @Override
     public boolean removeWhenFarAway(double pDistanceToClosestPlayer)
     {
         return false;
@@ -115,9 +135,9 @@ public class BBRabbit extends RabbitLikeMob
     }
     
     @Override
-    public void aiStep()
+    public double getJumpHorizontalModifier()
     {
-        super.aiStep();
+        return 1.0D;
     }
     
     @Override

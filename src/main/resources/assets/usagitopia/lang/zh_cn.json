@@ -7,11 +7,11 @@
   "entity.usagitopia.u_gunner_red": "红色UPRPRC枪手",
   "entity.usagitopia.bb_rabbit": "BB麻糬兔",
   "effect.usagitopia.vulnerance": "易伤",
-  "subtitles.entity.bb_rabbit.jump": "BB麻糬兔跳跃",
-  "subtitles.entity.u_girl.ambient": "UPRPRC少女空闲",
-  "subtitles.entity.u_girl.step": "UPRPRC少女脚步",
-  "subtitles.entity.u_girl.jump": "UPRPRC少女跳跃",
-  "subtitles.entity.u_girl.shoot": "UPRPRC少女射击",
-  "subtitles.entity.u_girl.hurt": "UPRPRC少女受伤",
-  "subtitles.entity.u_girl.death": "UPRPRC少女被击败"
+  "subtitles.entity.bb_rabbit.jump": "BB麻糬兔 : 跳跃",
+  "subtitles.entity.u_girl.ambient": "UPRPRC少女 : 空闲",
+  "subtitles.entity.u_girl.step": "UPRPRC少女 : 脚步",
+  "subtitles.entity.u_girl.jump": "UPRPRC少女 : 跳跃",
+  "subtitles.entity.u_girl.shoot": "UPRPRC少女 : 射击",
+  "subtitles.entity.u_girl.hurt": "UPRPRC少女 : 受伤",
+  "subtitles.entity.u_girl.death": "UPRPRC少女 : 被击败"
 }

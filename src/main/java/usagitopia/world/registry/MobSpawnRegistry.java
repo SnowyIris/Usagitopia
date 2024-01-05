@@ -9,12 +9,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 @Mod.EventBusSubscriber
 public final class MobSpawnRegistry
 {
+    private MobSpawnRegistry()
+    {
+    }
+    
     public static void registerMobSpawn(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(()->SpawnPlacements.register(EntityTypeRegistry.UPRPRC_GIRL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.WORLD_SURFACE, Monster::checkMonsterSpawnRules));
     }
     
-    private MobSpawnRegistry()
-    {
-    }
 }

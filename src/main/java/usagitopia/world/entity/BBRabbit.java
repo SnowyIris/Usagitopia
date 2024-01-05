@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -22,6 +23,8 @@ import usagitopia.world.entity.behavior.RabbicBehavior;
 import usagitopia.world.registry.MobEffectRegistry;
 import usagitopia.world.registry.SoundEventRegistry;
 
+import java.util.function.Predicate;
+
 public class BBRabbit extends PathfinderMob implements RabbicBehavior
 {
     public static final String REGISTRY_NAME         = "bb_rabbit";
@@ -29,7 +32,6 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
     public static final float  HEIGHT                = 0.5F;
     public static final double MAX_HEALTH            = 3.0D;
     public static final double MOVEMENT_SPEED        = 0.3D;
-    public static final double ATTACK_DAMAGE         = 0.0D;
     public static final float  TARGET_LOCK_RANGE     = 16.0F;
     public static final int    DEBUFF_ATTACH_DURANCE = 1000;
     
@@ -38,18 +40,11 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
         super(entityType, level);
     }
     
-    @Override
-    public void setJumping(boolean jumping)
-    {
-        super.setJumping(jumping);
-    }
-    
     public static AttributeSupplier.Builder createAttributes()
     {
         return Mob.createMobAttributes()
                   .add(Attributes.MAX_HEALTH, MAX_HEALTH)
-                  .add(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED)
-                  .add(Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE);
+                  .add(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED);
     }
     
     public void throwOutFrom(Entity shooter, double velocity, double inaccuracy)
@@ -77,13 +72,15 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
     protected void registerGoals()
     {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(2, new BBRabbitVulneranceAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(3, new MoveTowardsTargetGoal(this, 1.0D, TARGET_LOCK_RANGE));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0D, 1));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false, (entity)->entity instanceof Enemy));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false,
+                                                                         new BBRabbitVulneranceTargetSelector()
+        ));
     }
     
     @Override
@@ -147,6 +144,12 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
     }
     
     @Override
+    public SoundEvent getJumpSound()
+    {
+        return SoundEventRegistry.BB_RABBIT_JUMP.get();
+    }
+    
+    @Override
     public @NotNull Vec3 getLeashOffset()
     {
         return new Vec3(0.0D, 0.3D, 0.0D);
@@ -166,25 +169,20 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
             super.actuallyHurt(damageSource, damageAmount);
             return;
         }
-        if(!this.isInvulnerableTo(damageSource))
+        if(this.isInvulnerableTo(damageSource))
         {
-            ForgeHooks.onLivingHurt(this, damageSource, damageAmount);
-            float damage = 1.0F;
-            if(ForgeHooks.onLivingDamage(this, damageSource, damage) > 0.0F)
-            {
-                float health = this.getHealth();
-                this.getCombatTracker().recordDamage(damageSource, health, damage);
-                this.setHealth(health - damage);
-                this.setAbsorptionAmount(this.getAbsorptionAmount() - damage);
-                this.gameEvent(GameEvent.ENTITY_DAMAGE);
-            }
+            return;
         }
-    }
-    
-    @Override
-    public SoundEvent getJumpSound()
-    {
-        return SoundEventRegistry.BB_RABBIT_JUMP.get();
+        ForgeHooks.onLivingHurt(this, damageSource, damageAmount);
+        float damage = 1.0F;
+        if(ForgeHooks.onLivingDamage(this, damageSource, damage) > 0.0F)
+        {
+            float health = this.getHealth();
+            this.getCombatTracker().recordDamage(damageSource, health, damage);
+            this.setHealth(health - damage);
+            this.setAbsorptionAmount(this.getAbsorptionAmount() - damage);
+            this.gameEvent(GameEvent.ENTITY_DAMAGE);
+        }
     }
     
     @Override
@@ -210,9 +208,56 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
     }
     
     @Override
+    public void setJumping(boolean jumping)
+    {
+        super.setJumping(jumping);
+    }
+    
+    @Override
     protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size)
     {
         return 0.4F;
     }
     
+    public static class BBRabbitVulneranceTargetSelector implements Predicate<LivingEntity>
+    {
+        @Override
+        public boolean test(LivingEntity living)
+        {
+            if(living instanceof Enemy)
+            {
+                return true;
+            }
+            return living instanceof NeutralMob neutral && (neutral.getTarget() instanceof Player || neutral.isAngryAtAllPlayers(living.level));
+        }
+        
+    }
+    
+    public static class BBRabbitVulneranceAttackGoal extends MeleeAttackGoal
+    {
+        public BBRabbitVulneranceAttackGoal(PathfinderMob mob, double speedModifier, boolean followingTargetEvenIfNotSeen)
+        {
+            super(mob, speedModifier, followingTargetEvenIfNotSeen);
+        }
+        
+        @Override
+        protected void checkAndPerformAttack(@NotNull LivingEntity enemy, double pDistToEnemySqr)
+        {
+            double d0 = this.getAttackReachSqr(enemy);
+            if(pDistToEnemySqr <= d0 && this.getTicksUntilNextAttack() <= 0)
+            {
+                this.resetAttackCooldown();
+                if(!this.mob.level.isClientSide())
+                {
+                    Mob mob = this.mob.level.getNearestEntity(Mob.class, TargetingConditions.forCombat().range(1.0D).ignoreLineOfSight().selector(new BBRabbitVulneranceTargetSelector()),
+                                                              this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ(), this.mob.getBoundingBox().inflate(1.0D)
+                    );
+                    if(mob != null)
+                    {
+                        mob.addEffect(new MobEffectInstance(MobEffectRegistry.VULNERANCE.get(), DEBUFF_ATTACH_DURANCE), this.mob);
+                    }
+                }
+            }
+        }
+    }
 }

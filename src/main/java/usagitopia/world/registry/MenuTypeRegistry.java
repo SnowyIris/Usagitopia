@@ -12,4 +12,5 @@ public final class MenuTypeRegistry
     private MenuTypeRegistry()
     {
     }
+    
 }

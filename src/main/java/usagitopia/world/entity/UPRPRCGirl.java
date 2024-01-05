@@ -9,7 +9,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
@@ -52,7 +51,7 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     private static final UniformInt                  PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private static final EntityDataAccessor<Boolean> DATA_ANGRY            = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String>  DATA_GIRL_TYPE        = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.STRING);
-
+    
     private final RangedAttackGoal gunGoal   = new RangedAttackGoal(this, 1.25D, 20, 10.0F);
     private final MeleeAttackGoal  meleeGoal = new MeleeAttackGoal(this, 1.2D, false)
     {
@@ -114,12 +113,6 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     }
     
     @Override
-    public void setJumping(boolean jumping)
-    {
-        super.setJumping(jumping);
-    }
-    
-    @Override
     public @NotNull SoundSource getSoundSource()
     {
         return SoundSource.HOSTILE;
@@ -133,12 +126,6 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
         {
             this.updatePersistentAnger((ServerLevel)this.level, true);
         }
-    }
-    
-    @Override
-    public SoundEvent getJumpSound()
-    {
-        return SoundEventRegistry.UPRPRC_GIRL_JUMP.get();
     }
     
     @Override
@@ -166,6 +153,12 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     }
     
     @Override
+    public void setJumping(boolean jumping)
+    {
+        super.setJumping(jumping);
+    }
+    
+    @Override
     protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size)
     {
         return 1.40F;
@@ -175,6 +168,12 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     public double getJumpHorizontalModifier()
     {
         return 5.0d;
+    }
+    
+    @Override
+    public SoundEvent getJumpSound()
+    {
+        return SoundEventRegistry.UPRPRC_GIRL_JUMP.get();
     }
     
     @Override

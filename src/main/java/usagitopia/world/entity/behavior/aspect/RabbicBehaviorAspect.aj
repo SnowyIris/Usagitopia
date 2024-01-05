@@ -1,6 +1,7 @@
 package usagitopia.world.entity.behavior.aspect;
 
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -10,7 +11,6 @@ import usagitopia.world.entity.behavior.RabbicBehavior;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Random;
 
 public privileged aspect RabbicBehaviorAspect
 {
@@ -256,7 +256,7 @@ public privileged aspect RabbicBehaviorAspect
                     float soundVolume = (float)getSoundVolume.invoke(mob);
                     Field _random     = Entity.class.getDeclaredField("random");
                     _random.setAccessible(true);
-                    Random random = (Random)_random.get(mob);
+                    RandomSource random = (RandomSource)_random.get(mob);
                     mob.playSound(rabbic.getJumpSound(), soundVolume, ((random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F) * 0.8F);
                 }
                 catch(Exception e)

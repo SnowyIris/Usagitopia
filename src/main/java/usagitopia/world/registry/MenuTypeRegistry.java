@@ -9,4 +9,7 @@ public final class MenuTypeRegistry
 {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Usagitopia.MOD_ID);
     
+    private MenuTypeRegistry()
+    {
+    }
 }

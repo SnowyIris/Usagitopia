@@ -32,5 +32,4 @@ public final class EntityTypeRegistry
         event.put(EntityTypeRegistry.BB_RABBIT.get(), BBRabbit.createAttributes().build());
         event.put(EntityTypeRegistry.UPRPRC_GIRL.get(), UPRPRCGirl.createAttributes().build());
     }
-    
 }

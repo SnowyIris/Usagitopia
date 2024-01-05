@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 
-@Deprecated
+@Deprecated // Use interface 'RabbicBehavior' instead
 public abstract class RabbitLikeMob extends PathfinderMob
 {
     private static final EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(RabbitLikeMob.class, EntityDataSerializers.BOOLEAN);

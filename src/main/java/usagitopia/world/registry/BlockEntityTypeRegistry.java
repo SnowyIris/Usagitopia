@@ -12,5 +12,4 @@ public final class BlockEntityTypeRegistry
     private BlockEntityTypeRegistry()
     {
     }
-    
 }

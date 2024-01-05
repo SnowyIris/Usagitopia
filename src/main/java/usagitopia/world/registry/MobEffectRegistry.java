@@ -16,5 +16,4 @@ public final class MobEffectRegistry
     private MobEffectRegistry()
     {
     }
-    
 }

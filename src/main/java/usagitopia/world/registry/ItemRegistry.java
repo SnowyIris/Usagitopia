@@ -16,5 +16,4 @@ public final class ItemRegistry
     private ItemRegistry()
     {
     }
-    
 }

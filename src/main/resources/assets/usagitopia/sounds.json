@@ -1,2 +1,146 @@
 {
+  "entity.bb_rabbit.jump": {
+    "sounds": [
+      {
+        "name": "mob/piglin/step1",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step2",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step3",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step4",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step5",
+        "volume": 0.75
+      }
+    ],
+    "subtitle": "subtitles.entity.bb_rabbit.jump"
+  },
+  "entity.u_girl.ambient": {
+    "sounds": [
+      {
+        "name": "mob/piglin/idle1",
+        "volume": 0.66
+      },
+      {
+        "name": "mob/piglin/idle2",
+        "volume": 0.66
+      },
+      {
+        "name": "mob/piglin/idle3",
+        "volume": 0.66
+      },
+      {
+        "name": "mob/piglin/idle4",
+        "volume": 0.66
+      },
+      {
+        "name": "mob/piglin/idle5",
+        "volume": 0.66
+      }
+    ],
+    "subtitle": "subtitles.entity.u_girl.ambient"
+  },
+  "entity.u_girl.step": {
+    "sounds": [
+      {
+        "name": "mob/piglin/step1",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step2",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step3",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step4",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step5",
+        "volume": 0.75
+      }
+    ],
+    "subtitle": "subtitles.entity.u_girl.step"
+  },
+  "entity.u_girl.jump": {
+    "sounds": [
+      {
+        "name": "mob/piglin/step1",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step2",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step3",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step4",
+        "volume": 0.75
+      },
+      {
+        "name": "mob/piglin/step5",
+        "volume": 0.75
+      }
+    ],
+    "subtitle": "subtitles.entity.u_girl.jump"
+  },
+  "entity.u_girl.shoot": {
+    "sounds": [
+      "random/bow"
+    ],
+    "subtitle": "subtitles.entity.u_girl.shoot"
+  },
+  "entity.u_girl.hurt": {
+    "sounds": [
+      {
+        "name": "mob/piglin/hurt1",
+        "volume": 0.7
+      },
+      {
+        "name": "mob/piglin/hurt2",
+        "volume": 0.7
+      },
+      {
+        "name": "mob/piglin/hurt3",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.entity.u_girl.hurt"
+  },
+  "entity.u_girl.death": {
+    "sounds": [
+      {
+        "name": "mob/piglin/death1",
+        "volume": 0.7
+      },
+      {
+        "name": "mob/piglin/death2",
+        "volume": 0.7
+      },
+      {
+        "name": "mob/piglin/death3",
+        "volume": 0.8
+      },
+      {
+        "name": "mob/piglin/death4",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.entity.u_girl.death"
+  }
 }

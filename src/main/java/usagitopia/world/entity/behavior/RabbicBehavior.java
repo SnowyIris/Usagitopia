@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.JumpControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 
-public interface RabbitBehavior
+public interface RabbicBehavior
 {
     EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.BOOLEAN);
     
@@ -44,7 +44,7 @@ public interface RabbitBehavior
     {
         try
         {
-            return ((Mob)this).getEntityData().get(RabbitBehavior.DATA_JUMPING);
+            return ((Mob)this).getEntityData().get(RabbicBehavior.DATA_JUMPING);
         }
         catch(Exception e)
         {
@@ -94,7 +94,7 @@ public interface RabbitBehavior
         @Override
         public void tick()
         {
-            if(this.mob.isOnGround() && outer().isJumping() && !((RabbitBehavior.RabbicJumpControl)this.mob.getJumpControl()).wantJump())
+            if(this.mob.isOnGround() && outer().isJumping() && !((RabbicBehavior.RabbicJumpControl)this.mob.getJumpControl()).wantJump())
             {
                 this.outer().setSpeedModifier(0.0D);
             }
@@ -105,9 +105,9 @@ public interface RabbitBehavior
             super.tick();
         }
         
-        protected RabbitBehavior outer()
+        protected RabbicBehavior outer()
         {
-            return (RabbitBehavior)this.mob;
+            return (RabbicBehavior)this.mob;
         }
         
     }
@@ -149,9 +149,9 @@ public interface RabbitBehavior
             
         }
         
-        protected RabbitBehavior outer()
+        protected RabbicBehavior outer()
         {
-            return (RabbitBehavior)this.rabbic;
+            return (RabbicBehavior)this.rabbic;
         }
         
     }

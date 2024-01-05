@@ -6,41 +6,41 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import usagitopia.world.entity.behavior.RabbitBehavior;
+import usagitopia.world.entity.behavior.RabbicBehavior;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Random;
 
-public privileged aspect RabbitBehaviorAspect
+public privileged aspect RabbicBehaviorAspect
 {
     // Pointcut
-    pointcut isRabbic(): target(net.minecraft.world.entity.Mob) && target(usagitopia.world.entity.behavior.RabbitBehavior);
+    pointcut isRabbic(): target(net.minecraft.world.entity.Mob) && target(usagitopia.world.entity.behavior.RabbicBehavior);
     
     // Inter-type Declarations
-    int     RabbitBehavior.jumpTicks;
-    int     RabbitBehavior.jumpDuration;
-    boolean RabbitBehavior.wasOnGround;
-    int     RabbitBehavior.jumpDelayTicks;
+    int     RabbicBehavior.jumpTicks;
+    int     RabbicBehavior.jumpDuration;
+    boolean RabbicBehavior.wasOnGround;
+    int     RabbicBehavior.jumpDelayTicks;
     
     // Introduction
-    void RabbitBehavior.checkLandingDelay()
+    void RabbicBehavior.checkLandingDelay()
         {
             this.setLandingDelay();
             this.disableJumpControl();
         }
     
-    void RabbitBehavior.facePoint(double pX, double pZ)
+    void RabbicBehavior.facePoint(double pX, double pZ)
         {
             ((Mob)this).setYRot((float)(Mth.atan2(pZ - ((Mob)this).getZ(), pX - ((Mob)this).getX()) * (double)(180F / (float)Math.PI)) - 90.0F);
         }
     
-    void RabbitBehavior.enableJumpControl()
+    void RabbicBehavior.enableJumpControl()
         {
-            ((RabbitBehavior.RabbicJumpControl)((Mob)this).getJumpControl()).setCanJump(true);
+            ((RabbicBehavior.RabbicJumpControl)((Mob)this).getJumpControl()).setCanJump(true);
         }
     
-    void RabbitBehavior.setLandingDelay()
+    void RabbicBehavior.setLandingDelay()
         {
             if(((Mob)this).getMoveControl().getSpeedModifier() < 2.2D)
             {
@@ -53,26 +53,26 @@ public privileged aspect RabbitBehaviorAspect
             
         }
     
-    void RabbitBehavior.disableJumpControl()
+    void RabbicBehavior.disableJumpControl()
         {
-            ((RabbitBehavior.RabbicJumpControl)((Mob)this).getJumpControl()).setCanJump(false);
+            ((RabbicBehavior.RabbicJumpControl)((Mob)this).getJumpControl()).setCanJump(false);
         }
     
     // Advice
     after():execution(net.minecraft.world.entity.Mob+.new(..)) && isRabbic()
         {
-            // System.out.println("##Advising after 'net.minecraft.world.entity.Mob+.new(..)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising after 'net.minecraft.world.entity.Mob+.new(..)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob            mob    = (Mob)thisJoinPoint.getThis();
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
             try
             {
                 Field jumpControl = Mob.class.getDeclaredField("jumpControl");
                 jumpControl.setAccessible(true);
-                jumpControl.set(mob, new RabbitBehavior.RabbicJumpControl(mob));
+                jumpControl.set(mob, new RabbicBehavior.RabbicJumpControl(mob));
             }
             catch(Exception e)
             {
-                System.out.println("Exception when advising after 'net.minecraft.world.entity.Mob+.new(..)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+                System.out.println("Exception when advising after 'net.minecraft.world.entity.Mob+.new(..)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
                 System.out.println("  - Cannot set jumpControl to rabbic mob using reflect.");
                 System.out.println("      - Exception: " + e.getMessage());
                 System.out.println("      - Caused by: " + e.getCause());
@@ -81,11 +81,11 @@ public privileged aspect RabbitBehaviorAspect
             {
                 Field moveControl = Mob.class.getDeclaredField("moveControl");
                 moveControl.setAccessible(true);
-                moveControl.set(mob, new RabbitBehavior.RabbicMoveControl(mob));
+                moveControl.set(mob, new RabbicBehavior.RabbicMoveControl(mob));
             }
             catch(Exception e)
             {
-                System.out.println("Exception when advising after 'net.minecraft.world.entity.Mob+.new(..)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+                System.out.println("Exception when advising after 'net.minecraft.world.entity.Mob+.new(..)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
                 System.out.println("  - Cannot set moveControl to rabbic mob using reflect.");
                 System.out.println("      - Exception: " + e.getMessage());
                 System.out.println("      - Caused by: " + e.getCause());
@@ -95,18 +95,18 @@ public privileged aspect RabbitBehaviorAspect
     
     after():execution(void net.minecraft.world.entity.Mob+.defineSynchedData()) && isRabbic()
         {
-            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.defineSynchedData()'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.defineSynchedData()'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob mob = (Mob)thisJoinPoint.getThis();
-            mob.getEntityData().define(RabbitBehavior.DATA_JUMPING, false);
+            mob.getEntityData().define(RabbicBehavior.DATA_JUMPING, false);
         }
     
     void around(byte id):execution(void net.minecraft.world.entity.Mob+.handleEntityEvent(byte)) && args(id) && isRabbic()
         {
-            System.out.println("##Advising around 'void net.minecraft.world.entity.Mob+.handleEntityEvent(byte)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            System.out.println("##Advising around 'void net.minecraft.world.entity.Mob+.handleEntityEvent(byte)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             if(id == 1)
             {
                 Mob            mob    = (Mob)thisJoinPoint.getThis();
-                RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+                RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
                 rabbic.jumpDuration = 10;
                 rabbic.jumpTicks    = 0;
                 try
@@ -117,7 +117,7 @@ public privileged aspect RabbitBehaviorAspect
                 }
                 catch(Exception e)
                 {
-                    System.out.println("Exception when advising around 'void net.minecraft.world.entity.Mob+.handleEntityEvent(byte)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+                    System.out.println("Exception when advising around 'void net.minecraft.world.entity.Mob+.handleEntityEvent(byte)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
                     System.out.println("  - Cannot invoke spawnSprintParticle() in class 'Entity' using reflect.");
                     System.out.println("      - Exception: " + e.getMessage());
                     System.out.println("      - Caused by: " + e.getCause());
@@ -131,9 +131,9 @@ public privileged aspect RabbitBehaviorAspect
     
     before():execution(void net.minecraft.world.entity.Mob+.customServerAiStep()) && isRabbic()
         {
-            // System.out.println("##Advising before 'void net.minecraft.world.entity.Mob+.customServerAiStep()'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising before 'void net.minecraft.world.entity.Mob+.customServerAiStep()'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob            mob    = (Mob)thisJoinPoint.getThis();
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
             if(rabbic.jumpDelayTicks > 0)
             {
                 --rabbic.jumpDelayTicks;
@@ -145,7 +145,7 @@ public privileged aspect RabbitBehaviorAspect
                     mob.setJumping(false);
                     rabbic.checkLandingDelay();
                 }
-                if(mob.getJumpControl() instanceof RabbitBehavior.RabbicJumpControl jumpControl)
+                if(mob.getJumpControl() instanceof RabbicBehavior.RabbicJumpControl jumpControl)
                 {
                     if(!jumpControl.wantJump())
                     {
@@ -173,9 +173,9 @@ public privileged aspect RabbitBehaviorAspect
     
     after():execution(void net.minecraft.world.entity.Mob+.aiStep()) && isRabbic()
         {
-            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.aiStep()'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.aiStep()'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob            mob    = (Mob)thisJoinPoint.getThis();
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
             if(rabbic.jumpTicks != rabbic.jumpDuration)
             {
                 ++rabbic.jumpTicks;
@@ -188,9 +188,9 @@ public privileged aspect RabbitBehaviorAspect
             }
         }
     
-    float around():execution(float usagitopia.world.entity.behavior.RabbitBehavior+.getJumpPower()) && isRabbic()
+    float around():execution(float usagitopia.world.entity.behavior.RabbicBehavior+.getJumpPower()) && isRabbic()
         {
-            // System.out.println("##Advising around 'float usagitopia.world.entity.behavior.RabbitBehavior+.getJumpPower()'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising around 'float usagitopia.world.entity.behavior.RabbicBehavior+.getJumpPower()'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob   mob = (Mob)thisJoinPoint.getThis();
             float rtn = proceed();
             if(rtn == Float.MIN_VALUE)
@@ -221,9 +221,9 @@ public privileged aspect RabbitBehaviorAspect
     
     after():execution(void net.minecraft.world.entity.Mob+.jumpFromGround()) && isRabbic()
         {
-            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.jumpFromGround()'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.jumpFromGround()'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob            mob    = (Mob)thisJoinPoint.getThis();
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
             double         d0     = mob.getMoveControl().getSpeedModifier();
             if(d0 > 0.0D)
             {
@@ -243,10 +243,10 @@ public privileged aspect RabbitBehaviorAspect
     
     after(boolean jumping):execution(void net.minecraft.world.entity.Mob+.setJumping(boolean)) && args(jumping) && isRabbic()
         {
-            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.setJumping(boolean)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising after 'void net.minecraft.world.entity.Mob+.setJumping(boolean)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob            mob    = (Mob)thisJoinPoint.getThis();
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
-            mob.getEntityData().set(RabbitBehavior.DATA_JUMPING, jumping);
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
+            mob.getEntityData().set(RabbicBehavior.DATA_JUMPING, jumping);
             if(jumping && rabbic.getJumpSound() != null)
             {
                 try
@@ -261,7 +261,7 @@ public privileged aspect RabbitBehaviorAspect
                 }
                 catch(Exception e)
                 {
-                    System.out.println("Exception when advising after 'void net.minecraft.world.entity.Mob+.setJumping(boolean)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+                    System.out.println("Exception when advising after 'void net.minecraft.world.entity.Mob+.setJumping(boolean)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
                     System.out.println("  - Cannot play jump sound.");
                     System.out.println("      - Exception: " + e.getMessage());
                     System.out.println("      - Caused by: " + e.getCause());
@@ -269,20 +269,20 @@ public privileged aspect RabbitBehaviorAspect
             }
         }
     
-    before():execution(void usagitopia.world.entity.behavior.RabbitBehavior+.startJumping()) && isRabbic()
+    before():execution(void usagitopia.world.entity.behavior.RabbicBehavior+.startJumping()) && isRabbic()
         {
-            // System.out.println("##Advising before 'void usagitopia.world.entity.behavior.RabbitBehavior+.startJumping()'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
+            // System.out.println("##Advising before 'void usagitopia.world.entity.behavior.RabbicBehavior+.startJumping()'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
             Mob            mob    = (Mob)thisJoinPoint.getThis();
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
             mob.setJumping(true);
             rabbic.jumpDuration = 10;
             rabbic.jumpTicks    = 0;
         }
     
-    float around(float partialTick):execution(float usagitopia.world.entity.behavior.RabbitBehavior+.getJumpCompletion(float)) && args(partialTick) && isRabbic()
+    float around(float partialTick):execution(float usagitopia.world.entity.behavior.RabbicBehavior+.getJumpCompletion(float)) && args(partialTick) && isRabbic()
         {
-            System.out.println("##Advising around 'float usagitopia.world.entity.behavior.RabbitBehavior+.getJumpCompletion(float)'@'usagitopia.world.entity.behavior.aspect.RabbitBehaviorAspect'");
-            RabbitBehavior rabbic = (RabbitBehavior)thisJoinPoint.getThis();
+            System.out.println("##Advising around 'float usagitopia.world.entity.behavior.RabbicBehavior+.getJumpCompletion(float)'@'usagitopia.world.entity.behavior.aspect.RabbicBehaviorAspect'");
+            RabbicBehavior rabbic = (RabbicBehavior)thisJoinPoint.getThis();
             float          rtn    = proceed(partialTick);
             if(rtn == Float.MIN_VALUE)
             {

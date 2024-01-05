@@ -1,5 +1,6 @@
 package usagitopia.world.entity;
 
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,10 +18,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import org.jetbrains.annotations.NotNull;
-import usagitopia.world.entity.behavior.RabbitBehavior;
+import usagitopia.world.entity.behavior.RabbicBehavior;
 import usagitopia.world.registry.MobEffectRegistry;
+import usagitopia.world.registry.SoundEventRegistry;
 
-public class BBRabbit extends PathfinderMob implements RabbitBehavior
+public class BBRabbit extends PathfinderMob implements RabbicBehavior
 {
     public static final String REGISTRY_NAME         = "bb_rabbit";
     public static final float  WIDTH                 = 0.7F;
@@ -180,9 +182,15 @@ public class BBRabbit extends PathfinderMob implements RabbitBehavior
     }
     
     @Override
+    public SoundEvent getJumpSound()
+    {
+        return SoundEventRegistry.BB_RABBIT_JUMP.get();
+    }
+    
+    @Override
     public float getJumpPower()
     {
-        return Float.MIN_VALUE;
+        return Float.MIN_VALUE; // let aspect logic inject in. return 'Float.MIN_VALUE' to let aspect logic decide value returning, otherwise returning original value.
     }
     
     @Override

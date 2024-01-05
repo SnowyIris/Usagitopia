@@ -34,12 +34,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.scores.PlayerTeam;
 import org.jetbrains.annotations.NotNull;
 import usagitopia.Usagitopia;
-import usagitopia.world.entity.behavior.RabbitBehavior;
+import usagitopia.world.entity.behavior.RabbicBehavior;
+import usagitopia.world.registry.SoundEventRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class UPRPRCGirl extends Monster implements RabbitBehavior, NeutralMob, RangedAttackMob
+public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, RangedAttackMob
 {
     public static final String REGISTRY_NAME       = "uprprc_girl";
     public static final float  WIDTH               = 10.0F / 16.0F;
@@ -135,15 +136,21 @@ public class UPRPRCGirl extends Monster implements RabbitBehavior, NeutralMob, R
     }
     
     @Override
+    public SoundEvent getJumpSound()
+    {
+        return SoundEventRegistry.UPRPRC_GIRL_JUMP.get();
+    }
+    
+    @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource)
     {
-        return SoundEvents.PIGLIN_HURT;
+        return SoundEventRegistry.UPRPRC_GIRL_HURT.get();
     }
     
     @Override
     protected SoundEvent getDeathSound()
     {
-        return SoundEvents.PIGLIN_DEATH;
+        return SoundEventRegistry.UPRPRC_GIRL_DEATH.get();
     }
     
     @Override
@@ -213,7 +220,7 @@ public class UPRPRCGirl extends Monster implements RabbitBehavior, NeutralMob, R
     @Override
     protected SoundEvent getAmbientSound()
     {
-        return SoundEvents.PIGLIN_AMBIENT;
+        return SoundEventRegistry.UPRPRC_GIRL_AMBIENT.get();
     }
     
     @Override
@@ -305,13 +312,13 @@ public class UPRPRCGirl extends Monster implements RabbitBehavior, NeutralMob, R
     
     protected SoundEvent getGunFireSound()
     {
-        return SoundEvents.SKELETON_SHOOT;
+        return SoundEventRegistry.UPRPRC_GIRL_SHOOT.get();
     }
     
     @Override
     protected void playStepSound(@NotNull BlockPos pos, @NotNull BlockState block)
     {
-        this.playSound(SoundEvents.PIGLIN_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEventRegistry.UPRPRC_GIRL_STEP.get(), 0.15F, 1.0F);
     }
     
     @Override

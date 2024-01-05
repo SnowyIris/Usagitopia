@@ -26,7 +26,7 @@ public final class Usagitopia
         BlockRegistry.BLOCKS.register(modEventBus);
         EntityTypeRegistry.ENTITY_TYPES.register(modEventBus);
         BlockEntityTypeRegistry.BLOCK_ENTITY_TYPES.register(modEventBus);
-        SoundEventRegistry.SOUNDS.register(modEventBus);
+        SoundEventRegistry.SOUND_EVENTS.register(modEventBus);
         MenuTypeRegistry.MENUS.register(modEventBus);
         MobEffectRegistry.MOB_EFFECTS.register(modEventBus);
         

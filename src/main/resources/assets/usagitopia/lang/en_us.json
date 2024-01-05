@@ -6,5 +6,12 @@
   "entity.usagitopia.u_girl_red": "Red UPRPRC Girl",
   "entity.usagitopia.u_gunner_red": "Red UPRPRC Gunner",
   "entity.usagitopia.bb_rabbit": "BB Rabbit",
-  "effect.usagitopia.vulnerance": "Vulnerance"
+  "effect.usagitopia.vulnerance": "Vulnerance",
+  "subtitles.entity.bb_rabbit.jump": "BB Rabbit Jump",
+  "subtitles.entity.u_girl.ambient": "UPRPRC Girl Ambient",
+  "subtitles.entity.u_girl.step": "UPRPRC Girl Step",
+  "subtitles.entity.u_girl.jump": "UPRPRC Girl Jump",
+  "subtitles.entity.u_girl.shoot": "UPRPRC Girl Shoot",
+  "subtitles.entity.u_girl.hurt": "UPRPRC Girl Hurt",
+  "subtitles.entity.u_girl.death": "UPRPRC Girl Death"
 }

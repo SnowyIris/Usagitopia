@@ -51,7 +51,7 @@ public class UPRPRCGirl extends Monster implements RabbitBehavior, NeutralMob, R
     private static final UniformInt                  PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private static final EntityDataAccessor<Boolean> DATA_ANGRY            = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String>  DATA_GIRL_TYPE        = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.STRING);
-    
+
     private final RangedAttackGoal gunGoal   = new RangedAttackGoal(this, 1.25D, 20, 10.0F);
     private final MeleeAttackGoal  meleeGoal = new MeleeAttackGoal(this, 1.2D, false)
     {

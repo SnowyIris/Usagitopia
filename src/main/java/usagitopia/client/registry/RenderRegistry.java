@@ -9,7 +9,7 @@ import usagitopia.client.renderer.entity.UPRPRCGirlRender;
 import usagitopia.world.registry.EntityTypeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class RenderRegistry
+public final class RenderRegistry
 {
     private RenderRegistry()
     {

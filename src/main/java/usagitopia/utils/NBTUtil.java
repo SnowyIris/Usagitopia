@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
-public class NBTUtil
+public final class NBTUtil
 {
     private NBTUtil()
     {

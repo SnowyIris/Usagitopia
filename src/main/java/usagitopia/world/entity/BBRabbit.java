@@ -17,9 +17,10 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import org.jetbrains.annotations.NotNull;
+import usagitopia.world.entity.behavior.RabbitBehavior;
 import usagitopia.world.registry.MobEffectRegistry;
 
-public class BBRabbit extends RabbitLikeMob
+public class BBRabbit extends PathfinderMob implements RabbitBehavior
 {
     public static final String REGISTRY_NAME         = "bb_rabbit";
     public static final float  WIDTH                 = 0.7F;
@@ -33,6 +34,12 @@ public class BBRabbit extends RabbitLikeMob
     public BBRabbit(EntityType<? extends PathfinderMob> entityType, Level level)
     {
         super(entityType, level);
+    }
+    
+    @Override
+    public void setJumping(boolean jumping)
+    {
+        super.setJumping(jumping);
     }
     
     public static AttributeSupplier.Builder createAttributes()
@@ -91,9 +98,27 @@ public class BBRabbit extends RabbitLikeMob
     }
     
     @Override
+    public void defineSynchedData()
+    {
+        super.defineSynchedData();
+    }
+    
+    @Override
+    public void aiStep()
+    {
+        super.aiStep();
+    }
+    
+    @Override
     public boolean removeWhenFarAway(double pDistanceToClosestPlayer)
     {
         return false;
+    }
+    
+    @Override
+    public void customServerAiStep()
+    {
+        super.customServerAiStep();
     }
     
     @Override
@@ -114,9 +139,9 @@ public class BBRabbit extends RabbitLikeMob
     }
     
     @Override
-    public void aiStep()
+    public double getJumpHorizontalModifier()
     {
-        super.aiStep();
+        return 1.0D;
     }
     
     @Override
@@ -152,6 +177,18 @@ public class BBRabbit extends RabbitLikeMob
                 this.gameEvent(GameEvent.ENTITY_DAMAGE);
             }
         }
+    }
+    
+    @Override
+    public float getJumpPower()
+    {
+        return Float.MIN_VALUE;
+    }
+    
+    @Override
+    public void jumpFromGround()
+    {
+        super.jumpFromGround();
     }
     
     @Override

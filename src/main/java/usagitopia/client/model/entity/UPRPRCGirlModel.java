@@ -149,11 +149,11 @@ public class UPRPRCGirlModel<T extends Entity> extends EntityModel<T>
                     this.ARM_RIGHT.yRot = 0.0F;
                 }
             }
-            if(uGirl.syncIsJumping())
+            if(uGirl.isJumping())
             {
                 this.LEG_LEFT.xRot        = -10.0F * DTA;
                 this.LEG_RIGHT.xRot       = -10.0F * DTA;
-                this.LEG_LEFT_LOWER.xRot  = 0.0F;
+                this.LEG_LEFT_LOWER.xRot  = 60.0F * DTA;
                 this.LEG_RIGHT_LOWER.xRot = 60.0F * DTA;
             }
             else

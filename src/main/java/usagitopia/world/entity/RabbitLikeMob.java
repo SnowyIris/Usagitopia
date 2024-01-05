@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 
+@Deprecated
 public abstract class RabbitLikeMob extends PathfinderMob
 {
     private static final EntityDataAccessor<Boolean> DATA_JUMPING = SynchedEntityData.defineId(RabbitLikeMob.class, EntityDataSerializers.BOOLEAN);
@@ -44,9 +45,9 @@ public abstract class RabbitLikeMob extends PathfinderMob
     }
     
     @Override
-    public void handleEntityEvent(byte pId)
+    public void handleEntityEvent(byte id)
     {
-        if(pId == 1)
+        if(id == 1)
         {
             this.spawnSprintParticle();
             this.jumpDuration = 10;
@@ -54,7 +55,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
         }
         else
         {
-            super.handleEntityEvent(pId);
+            super.handleEntityEvent(id);
         }
         
     }
@@ -74,11 +75,6 @@ public abstract class RabbitLikeMob extends PathfinderMob
             this.setJumping(false);
         }
         
-    }
-    
-    protected SoundEvent getJumpSound()
-    {
-        return null;
     }
     
     @Override
@@ -162,9 +158,19 @@ public abstract class RabbitLikeMob extends PathfinderMob
         ((RabbitLikeMob.RabbitLikeJumpControl)this.jumpControl).setCanJump(false);
     }
     
+    protected SoundEvent getJumpSound()
+    {
+        return null;
+    }
+    
     public boolean syncIsJumping()
     {
         return this.entityData.get(DATA_JUMPING);
+    }
+    
+    public float getJumpCompletion(float partialTick)
+    {
+        return this.jumpDuration == 0 ? 0.0F : ((float)this.jumpTicks + partialTick) / (float)this.jumpDuration;
     }
     
     @Override
@@ -178,15 +184,15 @@ public abstract class RabbitLikeMob extends PathfinderMob
                 Vec3 vec3 = path.getNextEntityPos(this);
                 if(vec3.y > this.getY() + 0.5D)
                 {
-                    return 0.5F;
+                    return 0.6F;
                 }
             }
             
-            return this.moveControl.getSpeedModifier() <= 0.6D ? 0.2F : 0.3F;
+            return this.moveControl.getSpeedModifier() <= 0.6D ? 0.3F : 0.4F;
         }
         else
         {
-            return 0.5F;
+            return 0.6F;
         }
     }
     
@@ -203,13 +209,15 @@ public abstract class RabbitLikeMob extends PathfinderMob
                 this.moveRelative(0.1F, new Vec3(0.0D, 0.0D, 1.0D));
             }
         }
-        
         if(!this.level.isClientSide)
         {
             this.level.broadcastEntityEvent(this, (byte)1);
         }
-        
+        Vec3 d = this.getDeltaMovement();
+        this.setDeltaMovement(d.x() * this.getJumpHorizontalModifier(), d.y(), d.z() * this.getJumpHorizontalModifier());
     }
+    
+    protected abstract double getJumpHorizontalModifier();
     
     @Override
     public void setJumping(boolean jumping)
@@ -222,11 +230,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
         }
     }
     
-    public float getJumpCompletion(float partialTick)
-    {
-        return this.jumpDuration == 0 ? 0.0F : ((float)this.jumpTicks + partialTick) / (float)this.jumpDuration;
-    }
-    
+    @Deprecated
     public static class RabbitLikeMoveControl extends MoveControl
     {
         private final RabbitLikeMob rabbitLikeMob;
@@ -264,6 +268,7 @@ public abstract class RabbitLikeMob extends PathfinderMob
         
     }
     
+    @Deprecated
     public static class RabbitLikeJumpControl extends JumpControl
     {
         private final RabbitLikeMob rabbitLikeMob;

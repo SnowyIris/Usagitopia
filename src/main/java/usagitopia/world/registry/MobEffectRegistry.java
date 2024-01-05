@@ -7,7 +7,7 @@ import net.minecraftforge.registries.RegistryObject;
 import usagitopia.Usagitopia;
 import usagitopia.world.mobeffect.Vulnerance;
 
-public class MobEffectRegistry
+public final class MobEffectRegistry
 {
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Usagitopia.MOD_ID);
     

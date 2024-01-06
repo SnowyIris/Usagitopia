@@ -19,7 +19,16 @@ public class UPRPRCGirlRender extends MobRenderer<UPRPRCGirl, UPRPRCGirlModel<UP
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull UPRPRCGirl entity)
     {
-        return new ResourceLocation(Usagitopia.MOD_ID, "textures/entity/" + entity.getGirlType().getName4Registry() + ".png");
+        String path = "textures/entity/" + entity.getGirlType().getRegisterName();
+        if(entity.syncIsAngry())
+        {
+            return new ResourceLocation(Usagitopia.MOD_ID, path + "_attack.png");
+        }
+        if(entity.isHurting())
+        {
+            return new ResourceLocation(Usagitopia.MOD_ID, path + "_hurt.png");
+        }
+        return new ResourceLocation(Usagitopia.MOD_ID, path + ".png");
     }
     
 }

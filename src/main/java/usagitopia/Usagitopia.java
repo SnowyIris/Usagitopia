@@ -9,12 +9,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import usagitopia.world.registry.*;
 
 @Mod(Usagitopia.MOD_ID)
 public final class Usagitopia
 {
     public static final String MOD_ID = "usagitopia";
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     
     public Usagitopia()
     {

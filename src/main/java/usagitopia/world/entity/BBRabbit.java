@@ -259,5 +259,7 @@ public class BBRabbit extends PathfinderMob implements RabbicBehavior
                 }
             }
         }
+        
     }
+    
 }

@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -41,19 +42,21 @@ import java.util.UUID;
 
 public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, RangedAttackMob
 {
-    public static final String REGISTRY_NAME       = "uprprc_girl";
-    public static final float  WIDTH               = 10.0F / 16.0F;
-    public static final float  HEIGHT              = 24.0F / 16.0F;
-    public static final double MAX_HEALTH          = 20.0D;
-    public static final double MOVEMENT_SPEED      = 0.3D;
-    public static final double MELEE_ATTACK_DAMAGE = 4.0D;
+    public static final String REGISTRY_NAME            = "uprprc_girl";
+    public static final float  WIDTH                    = 10.0F / 16.0F;
+    public static final float  HEIGHT                   = 24.0F / 16.0F;
+    public static final double MAX_HEALTH               = 20.0D;
+    public static final double MOVEMENT_SPEED           = 0.3D;
+    public static final double MELEE_ATTACK_DAMAGE      = 4.0D;
+    public static final int    HURTING_ANIMATION_DURING = 50;
     
     private static final UniformInt                  PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
-    private static final EntityDataAccessor<Boolean> DATA_ANGRY            = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String>  DATA_GIRL_TYPE        = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> DATA_ANGRY            = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_HURTING          = SynchedEntityData.defineId(UPRPRCGirl.class, EntityDataSerializers.BOOLEAN);
     
-    private final RangedAttackGoal gunGoal   = new RangedAttackGoal(this, 1.25D, 20, 10.0F);
-    private final MeleeAttackGoal  meleeGoal = new MeleeAttackGoal(this, 1.2D, false)
+    private final RangedAttackGoal gunGoal      = new RangedAttackGoal(this, 1.25D, 20, 10.0F);
+    private final MeleeAttackGoal  meleeGoal    = new MeleeAttackGoal(this, 1.2D, false)
     {
         @Override
         public void start()
@@ -72,6 +75,7 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     // private int targetChangeTime;
     private       int              remainingPersistentAngerTime;
     private       UUID             persistentAngerTarget;
+    private       int              hurting_tick = 0;
     
     public UPRPRCGirl(EntityType<? extends UPRPRCGirl> entityType, Level level)
     {
@@ -125,6 +129,14 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
         if(!this.level.isClientSide)
         {
             this.updatePersistentAnger((ServerLevel)this.level, true);
+            if(hurting_tick > 0)
+            {
+                --hurting_tick;
+                if(hurting_tick == 0)
+                {
+                    this.entityData.set(DATA_HURTING, false);
+                }
+            }
         }
     }
     
@@ -138,6 +150,17 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     protected SoundEvent getDeathSound()
     {
         return SoundEventRegistry.UPRPRC_GIRL_DEATH.get();
+    }
+    
+    @Override
+    public boolean hurt(@NotNull DamageSource source, float amount)
+    {
+        if(!this.level.isClientSide)
+        {
+            hurting_tick = HURTING_ANIMATION_DURING;
+            this.entityData.set(DATA_HURTING, true);
+        }
+        return super.hurt(source, amount);
     }
     
     @Override
@@ -162,6 +185,16 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size)
     {
         return 1.40F;
+    }
+    
+    protected float getStandingGunHeight(@NotNull Pose pose, @NotNull EntityDimensions size)
+    {
+        return 1.25F;
+    }
+    
+    public boolean isHurting()
+    {
+        return this.entityData.get(DATA_HURTING);
     }
     
     @Override
@@ -206,8 +239,9 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     public void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.define(DATA_ANGRY, false);
         this.entityData.define(DATA_GIRL_TYPE, GirlType.GIRL_BLUE.name());
+        this.entityData.define(DATA_ANGRY, false);
+        this.entityData.define(DATA_HURTING, false);
     }
     
     @Override
@@ -258,12 +292,38 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     
     protected void populateDefaultGirlType(RandomSource random, DifficultyInstance difficulty)
     {
-        switch(random.nextInt(4))
+        boolean isGunner;
+        if(Difficulty.HARD.equals(difficulty.getDifficulty()))
         {
-            case 1 -> this.setGirlType(GirlType.GIRL_GREEN);
-            case 2 -> this.setGirlType(GirlType.GIRL_RED);
-            case 3 -> this.setGirlType(GirlType.GUNNER_RED);
-            default -> this.setGirlType(GirlType.GIRL_BLUE);
+            isGunner = random.nextFloat() < 0.67f;
+        }
+        else if(Difficulty.NORMAL.equals(difficulty.getDifficulty()))
+        {
+            isGunner = random.nextFloat() < 0.50f;
+        }
+        else
+        {
+            isGunner = random.nextFloat() < 0.33f;
+        }
+        if(isGunner)
+        {
+            switch(random.nextInt(4))
+            {
+                case 0 -> this.setGirlType(GirlType.GUNNER_BLUE);
+                case 1 -> this.setGirlType(GirlType.GUNNER_YELLOW);
+                case 2 -> this.setGirlType(GirlType.GUNNER_GREEN);
+                case 3 -> this.setGirlType(GirlType.GUNNER_RED);
+            }
+        }
+        else
+        {
+            switch(random.nextInt(4))
+            {
+                case 0 -> this.setGirlType(GirlType.GIRL_BLUE);
+                case 1 -> this.setGirlType(GirlType.GIRL_YELLOW);
+                case 2 -> this.setGirlType(GirlType.GIRL_GREEN);
+                case 3 -> this.setGirlType(GirlType.GIRL_RED);
+            }
         }
     }
     
@@ -299,13 +359,11 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     public void performRangedAttack(@NotNull LivingEntity target, float distanceFactor)
     {
         Snowball snowball = new Snowball(this.level, this);
-        double   d0       = target.getEyeY() - (double)1.1F;
-        double   d1       = target.getX() - this.getX();
-        double   d2       = d0 - snowball.getY();
-        double   d3       = target.getZ() - this.getZ();
-        double   d4       = Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F;
-        snowball.shoot(d1, d2 + d4, d3, 1.6F, 12.0F);
-        this.playSound(getGunFireSound(), 1.0F, 0.4F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+        double   dX       = target.getX() - this.getX();
+        double   dZ       = target.getZ() - this.getZ();
+        double   dY       = target.getEyeY() - snowball.getY(); // + Math.sqrt(dX * dX + dZ * dZ) * (double)0.2F
+        snowball.shoot(dX, dY, dZ, 3.0F, 4.0F);
+        this.playSound(getGunFireSound(), 1.0F, 1.0F);
         this.level.addFreshEntity(snowball);
     }
     
@@ -325,8 +383,8 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
     {
         return PlayerTeam.formatNameForTeam(this.getTeam(), this.getCustomName() != null ?
                                                             removeAction(this.getCustomName()) :
-                                                            Component.translatable("entity." + Usagitopia.MOD_ID + "." + this.getGirlType().getName4Registry())
-        ).withStyle((p_185975_)->p_185975_.withHoverEvent(this.createHoverEvent()).withInsertion(this.getStringUUID()));
+                                                            Component.translatable("entity." + Usagitopia.MOD_ID + "." + this.getGirlType().getRegisterName())
+        ).withStyle((style)->style.withHoverEvent(this.createHoverEvent()).withInsertion(this.getStringUUID()));
     }
     
     @Override
@@ -360,39 +418,24 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
     
-    public enum GirlColor
-    {
-        RED("red"),
-        BLUE("blue"),
-        GREEN("green");
-        
-        private final String colorName;
-        
-        GirlColor(String colorName)
-        {
-            this.colorName = colorName;
-        }
-        
-        public String getColorName()
-        {
-            return colorName;
-        }
-    }
-    
     public enum GirlType
     {
-        GUNNER_RED(GirlColor.RED, true),
-        GIRL_RED(GirlColor.RED, false),
-        GIRL_BLUE(GirlColor.BLUE, false),
-        GIRL_GREEN(GirlColor.GREEN, false);
+        GIRL_BLUE("u_girl_blue", false),
+        GIRL_YELLOW("u_girl_yellow", false),
+        GIRL_GREEN("u_girl_green", false),
+        GIRL_RED("u_girl_red", false),
+        GUNNER_BLUE("u_gunner_blue", false),
+        GUNNER_YELLOW("u_gunner_yellow", false),
+        GUNNER_GREEN("u_gunner_green", false),
+        GUNNER_RED("u_gunner_red", true);
         
-        private final GirlColor color;
-        private final boolean   isGunner;
+        private final String  registerName;
+        private final boolean isGunner;
         
-        GirlType(GirlColor color, boolean isGunner)
+        GirlType(String registerName, boolean isGunner)
         {
-            this.color    = color;
-            this.isGunner = isGunner;
+            this.registerName = registerName;
+            this.isGunner     = isGunner;
         }
         
         public static GirlType valueOfWithDefault(String name, GirlType defaultType)
@@ -407,19 +450,14 @@ public class UPRPRCGirl extends Monster implements RabbicBehavior, NeutralMob, R
             }
         }
         
-        public String getName4Registry()
+        public String getRegisterName()
         {
-            return "u_" + (isGunner() ? "gunner_" : "girl_") + getColor().getColorName();
+            return registerName;
         }
         
         public boolean isGunner()
         {
             return isGunner;
-        }
-        
-        public GirlColor getColor()
-        {
-            return color;
         }
     }
     

@@ -6,7 +6,7 @@ plugins {
     id "aspectj.AspectjGradlePlugin" version "0.0.8"
 }
 
-version = '0.1.0-03w01a'
+version = '0.1.0-24w01a'
 group = 'usagitopia'
 archivesBaseName = 'usagitopia'
 

@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.JumpControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import usagitopia.Usagitopia;
 
 public interface RabbicBehavior
 {
@@ -48,10 +49,10 @@ public interface RabbicBehavior
         }
         catch(Exception e)
         {
-            System.out.println("Exception@'usagitopia.world.entity.behavior.RabbitBehavior.isJumping()', returning 'false'.");
-            System.out.println("  - Cannot get entity data 'RabbitBehavior.DATA_JUMPING'.");
-            System.out.println("      - Exception: " + e.getMessage());
-            System.out.println("      - Caused by: " + e.getCause());
+            Usagitopia.LOGGER.error("Exception@'usagitopia.world.entity.behavior.RabbitBehavior.isJumping()', returning 'false'.");
+            Usagitopia.LOGGER.error("  - Cannot get entity data 'RabbitBehavior.DATA_JUMPING'.");
+            Usagitopia.LOGGER.error("      - Exception: " + e.getMessage());
+            Usagitopia.LOGGER.error("      - Caused by: " + e.getCause());
             return false;
         }
     }
